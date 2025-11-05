@@ -1,4 +1,6 @@
-import { getStore } from 'netlify:blobs';
+// netlify/functions/hit-counter.js
+// يعمل على Netlify Functions v1 مع تثبيت @netlify/blobs
+import { getStore } from '@netlify/blobs';
 
 const json = (body, status = 200) => ({
   statusCode: status,
@@ -16,6 +18,7 @@ export async function handler(event) {
   const key =
     (event.queryStringParameters && event.queryStringParameters.key) || 'test';
 
+  // مخزن العدّادات (اسم المخزن: counters)
   const store = await getStore('counters');
 
   if (event.httpMethod === 'POST') {
