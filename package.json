@@ -1,0 +1,8 @@
+{
+  "name": "coptic-liberation-site",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "^6.5.0"
+  }
+}
