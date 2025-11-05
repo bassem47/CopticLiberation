@@ -1,0 +1,7 @@
+[build]
+  functions = "netlify/functions"
+
+[[headers]]
+  for = "/.netlify/functions/hit-counter"
+  [headers.values]
+    Cache-Control = "no-store"

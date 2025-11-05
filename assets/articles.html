@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>قسم المقالات — قناة الفكر الحر</title>
+  <link rel="stylesheet" href="assets/forms.css">
+</head>
+<body>
+<header><h1>قسم المقالات</h1></header>
+<main class="container">
+  <div class="card">
+    <h3>أضف مقالًا جديدًا</h3>
+    <form name="articles" method="POST" data-netlify="true" enctype="multipart/form-data">
+      <input type="hidden" name="form-name" value="articles">
+      <p hidden><label>لا تملأ هذا الحقل: <input name="bot-field"></label></p>
+      <label>عنوان المقال</label>
+      <input type="text" name="title" required>
+      <label>الكاتب</label>
+      <input type="text" name="author">
+      <label>صورة مرفقة (اختياري)</label>
+      <input type="file" name="image" accept="image/*">
+      <label>المحتوى</label>
+      <textarea name="content" required></textarea>
+      <button class="btn" type="submit">حفظ المقال</button>
+      <p class="hint">يتم تجميع الإدخالات في Netlify Forms — ويمكن لاحقًا بناء صفحة عرض للمقالات.</p>
+    </form>
+  </div>
+</main>
+</body>
+</html>
