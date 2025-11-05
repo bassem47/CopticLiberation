@@ -1,39 +1,33 @@
-export default async (req, context) => {
-  try {
-    const url = new URL(req.url);
-    const key = url.searchParams.get("key") || "default";
-    const path = `counters/${key}`;
-    const blobs = context.blobs;
+import { getStore } from '@netlify/blobs';
 
-    const readCount = async () => {
-      const res = await blobs.get(path);
-      if (!res || !res.body) return 0;
-      const text = await res.text();
-      const n = parseInt(text, 10);
-      return Number.isFinite(n) ? n : 0;
-    };
+const json = (body, status = 200) => ({
+  statusCode: status,
+  headers: {
+    'content-type': 'application/json',
+    'access-control-allow-origin': '*',
+    'access-control-allow-methods': 'GET,POST,OPTIONS',
+  },
+  body: JSON.stringify(body),
+});
 
-    if (req.method === "GET") {
-      const count = await readCount();
-      return new Response(JSON.stringify({ count }), {
-        headers: { "content-type": "application/json" },
-      });
-    }
+export async function handler(event, context) {
+  if (event.httpMethod === 'OPTIONS') return json({});
 
-    if (req.method === "POST") {
-      let count = await readCount();
-      count += 1;
-      await blobs.set(path, String(count), { contentType: "text/plain" });
-      return new Response(JSON.stringify({ count }), {
-        headers: { "content-type": "application/json" },
-      });
-    }
+  const key =
+    (event.queryStringParameters && event.queryStringParameters.key) ||
+    'test';
 
-    return new Response("Method not allowed", { status: 405 });
-  } catch (e) {
-    return new Response(JSON.stringify({ error: e.message }), {
-      status: 500,
-      headers: { "content-type": "application/json" },
-    });
+  const store = await getStore('counters', { context });
+
+  if (event.httpMethod === 'POST') {
+    const currentRaw = await store.get(key);
+    const current = Number(currentRaw || 0);
+    const next = current + 1;
+    await store.set(key, String(next));
+    return json({ key, count: next });
   }
-};
+
+  const raw = await store.get(key);
+  const count = Number(raw || 0);
+  return json({ key, count });
+}
